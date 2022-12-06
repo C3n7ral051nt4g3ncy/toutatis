@@ -99,34 +99,34 @@ def main():
         print("External url           : "+infos["external_url"])
     print("IGTV posts             : "+str(infos["total_igtv_videos"]))
     print("Biography              : "+(f"""\n{" "*25}""").join(infos["biography"].split("\n")))
-    
-    if "public_email" in infos.keys():
-        if infos["public_email"]:
-            print("Public Email           : "+infos["public_email"])
 
-    if "public_phone_number" in infos.keys():
-        if str(infos["public_phone_number"]):
-            phonenr = "+"+str(infos["public_phone_country_code"])+" "+str(infos["public_phone_number"])
-            try:
-                pn = phonenumbers.parse(phonenr)
-                countrycode = region_code_for_country_code(pn.country_code)
-                country = pycountry.countries.get(alpha_2=countrycode)
-                phonenr = phonenr + " ({}) ".format(country.name)
-            except: # except what ??
-                pass # pass what ??
-            print("Public Phone number    : " + phonenr)
+    if "public_email" in infos.keys() and infos["public_email"]:
+        print("Public Email           : "+infos["public_email"])
+
+    if "public_phone_number" in infos.keys() and str(
+        infos["public_phone_number"]
+    ):
+        phonenr = "+"+str(infos["public_phone_country_code"])+" "+str(infos["public_phone_number"])
+        try:
+            pn = phonenumbers.parse(phonenr)
+            countrycode = region_code_for_country_code(pn.country_code)
+            country = pycountry.countries.get(alpha_2=countrycode)
+            phonenr = f"{phonenr} ({country.name}) "
+        except: # except what ??
+            pass # pass what ??
+        print(f"Public Phone number    : {phonenr}")
 
     other_infos=advanced_lookup(args.username)
-    
+
     if other_infos["error"] == "rate limit":
         print("Rate limit please wait a few minutes before you try again")
-    
+
     elif "message" in other_infos["user"].keys():
         if other_infos["user"]["message"] == "No users found":
             print("The lookup did not work on this account")
         else:
             print(other_infos["user"]["message"])
-    
+
     else:
         if "obfuscated_email" in other_infos["user"].keys():
             if other_infos["user"]["obfuscated_email"]:
